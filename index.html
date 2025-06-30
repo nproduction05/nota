@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NDTECH Smart Digital Solution</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #f9f3f3;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .content {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .iframe-container {
+            width: 90%;
+            max-width: 700px;
+            height: 90vh;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            overflow: hidden;
+            position: relative;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .loader {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .loader img {
+            width: 80px;
+            margin-bottom: 10px;
+        }
+
+        .progress-bar {
+            width: 200px;
+            height: 10px;
+            background: #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 0 auto;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            width: 0;
+            background: red;
+            transition: width 0.5s;
+        }
+
+        footer {
+            background: #000;
+            color: #fff;
+            text-align: center;
+            padding: 10px 0;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="content">
+    <div class="iframe-container">
+        <div class="loader" id="loader">
+            <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiibViPYKYXdHuvx-DmyCm_IKRkbjX1UBdYgR7PHsWGhdMESnh9_YorRYXec5QPRhSzGDR_xbqbOJI48MEagTnfRmNlM7cDrQeo8l4yd8D3At0f-7TKa3FB-akVsj3Zmz8vVzaEVsIm9LYv8zd2GK85LS64Hz9wI9LFJRPas4A1N404vH8H4up6olL8l-z_/s1280/1000340306.jpg" alt="NUNGGUIN YA....">
+            <div class="progress-bar">
+                <div class="progress-bar-fill" id="progressBar"></div>
+            </div>
+        </div>
+        <iframe id="notaFrame" src="" allowfullscreen onload="hideLoader()"></iframe>
+    </div>
+</div>
+
+<footer>
+    Document ini dibuat oleh ND Tech Smart Digital Solution
+</footer>
+
+<script>
+        const pathSegments = window.location.pathname.split('/');
+    const notaId = pathSegments[pathSegments.length - 1] || pathSegments[pathSegments.length - 2];
+
+    const progressBar = document.getElementById('progressBar');
+    let progress = 0;
+    let interval = setInterval(() => {
+        if (progress < 90) {
+            progress += 10;
+            progressBar.style.width = progress + '%';
+        } else {
+            clearInterval(interval);
+        }
+    }, 500);
+
+    // Fetch langsung dari Google Apps Script Web App
+    fetch('https://script.google.com/macros/s/AKfycbxzjeqi9Zzmab2MLFrGYm90U6y0k5wPvb4tbJSxcEgvWJU75gzcVcPsPF4xZTaRiw9ffA/exec')
+        .then(response => response.json())
+        .then(data => {
+            if (data[notaId]) {
+                document.getElementById('notaFrame').src = data[notaId];
+                document.getElementById('notaFrame').style.display = 'block';
+            } else {
+                alert('Nota tidak ditemukan.');
+            }
+            hideLoader();
+        })
+        .catch(error => {
+            console.error('Error loading JSON:', error);
+            alert('Gagal memuat data.');
+            hideLoader();
+        });
+
+    function hideLoader() {
+        clearInterval(interval);
+        progressBar.style.width = '100%';
+        setTimeout(() => {
+            document.getElementById('loader').style.display = 'none';
+        }, 500);
+    }
+
+</script>
+
+</body>
+</html>
